@@ -1,27 +1,27 @@
 class Solution {
 public:
     int minEatingSpeed(vector<int>& piles, int h) {
-        int left = 1;
-        int right = *max_element(piles.begin(), piles.end());
-        while(left < right)
+        int left = 1, right = 1000000000;
+        while(left <= right)
         {
             int mid = left + (right - left) / 2;
-            bool result = calculate(mid, piles, h);
-            if(result) right = mid ;
-            else left = mid + 1;
+            int count = GetCount(piles, mid);
+            if(count == h) right = mid - 1;
+            else if(count > h) left = mid + 1;
+            else right = mid - 1;
         }
+        if(left > 1000000000 || GetCount(piles, left) > h) return -1;
         return left;
     }
-
-    bool calculate(int count, const vector<int>& piles, int h)
+        
+    int GetCount(vector<int>& piles, int time)
     {
-        int hour = 0;
-        for(int i = 0; i < piles.size(); i++)
+        int amount = 0;
+        for(int i: piles)
         {
-            hour += piles[i] / count;
-            hour += piles[i] % count == 0? 0 : 1;
+            amount += i / time;
+            amount += i % time != 0 ? 1 : 0;
         }
-        if(hour <= h)return true;
-        else return false;
+        return amount;
     }
 };
